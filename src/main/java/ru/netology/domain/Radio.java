@@ -16,7 +16,7 @@ public class Radio {
         return currentStation;
     }
 
-    // set/get для громкости
+    // set/get для громкости для проведения тестов по увеличению/уменьшению громкости
     public void setCurrentVolume(int newCurrentVolume) {
         if (newCurrentVolume < 0 || newCurrentVolume > 10) {
             return;
