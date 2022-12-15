@@ -10,8 +10,41 @@ public class RadioTest {
     int actual;
 
     @ParameterizedTest
+    // подготовка тестовых данных для конструктора с параметром Radio(numStations)
+    // если количество станций задано пользователем:
+    //     первое значение - количество станций,
+    //     второе значение - ожидаемое значение максимального номера станции
+    @CsvSource({
+            "60, 59", // позитивный
+            "-60, 0", // негативный
+            "0, 0", // граничные значения
+            "-1, 0",
+            "1, 0",
+    })
+
+    public void shouldNewRadioWithParam(int numStations, int expected) {
+        Radio radio = new Radio(numStations);
+
+        actual = radio.getMaxStation();  // фактическое значение максимального номера станции
+
+        Assertions.assertEquals(expected, actual);
+    }
+
+    @Test
+    public void shouldNewRadioDefault() {
+        Radio radio = new Radio();
+
+        expected = 9;
+        actual = radio.getMaxStation();
+
+        Assertions.assertEquals(expected, actual);
+    }
+
+
+    @ParameterizedTest
     // подготовка тестовых данных для метода setCurrentStation(currentStation)
-    // - выставлять номер радиостанции через прямое указание её номера
+    // - выставлять номер радиостанции через прямое указание её номера,
+    // если количество станций задано по умолчанию
     @CsvSource({
             "6, 6", // позитивный
             "-6, 0", // негативныe
@@ -24,8 +57,33 @@ public class RadioTest {
             "10, 0"
     })
 
-    void shouldSetCurrentStation(int currentStation, int expected) {
+    public void shouldSetCurrentStationDefault(int currentStation, int expected) {
         Radio radio = new Radio();
+
+        radio.setCurrentStation(currentStation);
+        actual = radio.getCurrentStation();
+
+        Assertions.assertEquals(expected, actual);
+    }
+
+    @ParameterizedTest
+    // подготовка тестовых данных для метода setCurrentStation(currentStation)
+    // - выставлять номер радиостанции через прямое указание её номера
+    // если количество станций задано пользователем
+    @CsvSource({
+            "30, 60, 30", // позитивный
+            "-30, 60, 0", // негативныe
+            "160, 60, 0",
+            "0, 60, 0", // граничные значения
+            "-1, 60, 0",
+            "1, 60, 1",
+            "58, 60, 58",
+            "59, 60, 59",
+            "60, 60, 0"
+    })
+
+    public void shouldSetCurrentStation(int currentStation, int numStations, int expected) {
+        Radio radio = new Radio(numStations);
 
         radio.setCurrentStation(currentStation);
         actual = radio.getCurrentStation();
@@ -36,6 +94,7 @@ public class RadioTest {
 
     @ParameterizedTest
     // подготовка тестовых данных для метода переключения на следующую станцию next()
+    // если количество станций задано по умолчанию
     @CsvSource({
             "6, 7", // позитивный
             "9, 0", // граничные значения
@@ -44,8 +103,29 @@ public class RadioTest {
             "1, 2"
     })
 
-    void shouldNextStation(int currentStation, int expected) {
+    public void shouldNextStationDefault(int currentStation, int expected) {
         Radio radio = new Radio();
+        radio.setCurrentStation(currentStation);
+
+        radio.next();
+        actual = radio.getCurrentStation();
+
+        Assertions.assertEquals(expected, actual);
+    }
+
+    @ParameterizedTest
+    // подготовка тестовых данных для метода переключения на следующую станцию next()
+    // если количество станций задано пользователем
+    @CsvSource({
+            "30, 60, 31", // позитивный
+            "59, 60, 0", // граничные значения
+            "58, 60, 59",
+            "0, 60, 1",
+            "1, 60, 2"
+    })
+
+    public void shouldNextStation(int currentStation, int numStations, int expected) {
+        Radio radio = new Radio(numStations);
         radio.setCurrentStation(currentStation);
 
         radio.next();
@@ -57,6 +137,7 @@ public class RadioTest {
 
     @ParameterizedTest
     // подготовка тестовых данных для метода переключения на предыдущую станцию prev()
+    // если количество станций задано по умолчанию
     @CsvSource({
             "6, 5", // позитивный
             "0, 9", // граничные значения
@@ -65,8 +146,29 @@ public class RadioTest {
             "8, 7"
     })
 
-    void shouldPrevStation(int currentStation, int expected) {
+    public void shouldPrevStationDefault(int currentStation, int expected) {
         Radio radio = new Radio();
+        radio.setCurrentStation(currentStation);
+
+        radio.prev();
+        actual = radio.getCurrentStation();
+
+        Assertions.assertEquals(expected, actual);
+    }
+
+    @ParameterizedTest
+    // подготовка тестовых данных для метода переключения на предыдущую станцию prev()
+    // если количество станций задано пользователем
+    @CsvSource({
+            "30, 60, 29", // позитивный
+            "0, 60, 59", // граничные значения
+            "1, 60, 0",
+            "59, 60, 58",
+            "58, 60, 57"
+    })
+
+    public void shouldPrevStation(int currentStation, int numStations, int expected) {
+        Radio radio = new Radio(numStations);
         radio.setCurrentStation(currentStation);
 
         radio.prev();
@@ -79,18 +181,18 @@ public class RadioTest {
     @ParameterizedTest
     // подготовка тестовых данных для метода установки текущей громкости setCurrentVolume(currentVolume)
     @CsvSource({
-            "6, 6", // позитивный
-            "-6, 0", // негативныe
-            "16, 0",
+            "60, 60", // позитивный
+            "-10, 0", // негативныe
+            "160, 0",
             "0, 0", // граничные значения
             "-1, 0",
             "1, 1",
-            "10, 10",
-            "9, 9",
-            "11, 0"
+            "100, 100",
+            "99, 99",
+            "101, 0"
     })
 
-    void shouldSetCurrentVolume(int currentVolume, int expected) {
+    public void shouldSetCurrentVolume(int currentVolume, int expected) {
         Radio radio = new Radio();
 
         radio.setCurrentVolume(currentVolume);
@@ -102,13 +204,13 @@ public class RadioTest {
     @ParameterizedTest
     // подготовка тестовых данных для метода увеличения громкости louder()
     @CsvSource({
-            "6, 7", // позитивный
-            "10, 10", // граничные значения
-            "9, 10",
+            "60, 61", // позитивный
+            "100, 100", // граничные значения
+            "99, 100",
             "0, 1"
     })
 
-    void shouldLouderVolume(int currentVolume, int expected) {
+    public void shouldLouderVolume(int currentVolume, int expected) {
         Radio radio = new Radio();
         radio.setCurrentVolume(currentVolume);
 
@@ -121,13 +223,13 @@ public class RadioTest {
     @ParameterizedTest
     // подготовка тестовых данных для метода уменьшения громкости quieter()
     @CsvSource({
-            "6, 5", // позитивный
+            "60, 59", // позитивный
             "0, 0", // граничные значения
             "1, 0",
-            "10, 9"
+            "100, 99"
     })
 
-    void shouldQuieterVolume(int currentVolume, int expected) {
+    public void shouldQuieterVolume(int currentVolume, int expected) {
         Radio radio = new Radio();
         radio.setCurrentVolume(currentVolume);
 
