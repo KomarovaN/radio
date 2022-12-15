@@ -21,6 +21,12 @@
             <version>5.7.0</version>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <version>1.18.24</version>
+            <scope>provided</scope>
+        </dependency>
     </dependencies>
 
     <build>
@@ -63,9 +69,10 @@
                             <haltOnFailure>false</haltOnFailure>
                             <rules>
                                 <rule>
+                                    <element>METHOD</element>
                                     <limits>
                                         <limit>
-                                            <counter>BRANCH</counter>
+                                            <counter>METHOD</counter>
                                             <value>COVEREDRATIO</value>
                                             <minimum>100%</minimum>
                                         </limit>

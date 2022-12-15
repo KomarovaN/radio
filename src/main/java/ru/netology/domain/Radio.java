@@ -1,37 +1,53 @@
 package ru.netology.domain;
 
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
+
+//@RequiredArgsConstructor(staticName = "of")
+//@NoArgsConstructor
+@Data
+
 public class Radio {
     int currentStation;
     int currentVolume;
+    int minStation;
+    int maxStation;
+    int minVolume;
+    int maxVolume = 100;
+    int numStations = 10;
 
-    // set/get для станции
+
+
+    public Radio(int numStations) {
+        if (numStations > minStation) {
+           maxStation = minStation + numStations - 1;
+           this.numStations = numStations;
+        }
+    }
+
+    public Radio() {
+        maxStation = numStations - 1;
+    }
+
     public void setCurrentStation(int newCurrentStation) {
-        if (newCurrentStation < 0 || newCurrentStation > 9) {
+        if (newCurrentStation < minStation || newCurrentStation > maxStation) {
             return;
         }
         currentStation = newCurrentStation;
     }
 
-    public int getCurrentStation() {
-        return currentStation;
-    }
-
-    // set/get для громкости для проведения тестов по увеличению/уменьшению громкости
     public void setCurrentVolume(int newCurrentVolume) {
-        if (newCurrentVolume < 0 || newCurrentVolume > 10) {
+        if (newCurrentVolume < minVolume || newCurrentVolume > maxVolume) {
             return;
         }
         currentVolume = newCurrentVolume;
     }
 
-    public int getCurrentVolume() {
-        return currentVolume;
-    }
-
     // переключаем станции
     public void next() {
-        if (currentStation == 9) {
-            currentStation = 0;
+        if (currentStation == maxStation) {
+            currentStation = minStation;
         }
         else {
             currentStation++;
@@ -39,8 +55,8 @@ public class Radio {
     }
 
     public void prev() {
-        if (currentStation == 0) {
-            currentStation = 9;
+        if (currentStation == minStation) {
+            currentStation = maxStation;
         }
         else {
             currentStation--;
